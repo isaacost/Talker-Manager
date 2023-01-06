@@ -41,4 +41,22 @@ verifyWatchedAt, verifyRate, verifyRate2, async (req, res) => {
   res.status(201).json(createdTalker);
 });
 
+router.put('/talker/:id', verifyAuth, verifyName, verifyAge, verifyTalk, 
+verifyWatchedAt, verifyRate, verifyRate2, async (req, res) => {
+  let { id } = req.params;
+  id = Number(id);
+  const { body } = req;
+  const talkers = await readFile(PATH);
+  const findTalker = talkers.find((element) => Number(element.id) === Number(id));
+
+  if (!findTalker) return res.status(404).json({ message: 'Id not found' });
+
+  const index = talkers.findIndex((element) => Number(element.id) === Number(id));
+  const editedTalker = { id, ...body };
+  talkers[index] = editedTalker;
+
+  await writeFile(PATH, talkers);
+  res.status(200).json(editedTalker);  
+});
+
 module.exports = router;
