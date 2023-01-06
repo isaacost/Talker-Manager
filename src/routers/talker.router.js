@@ -9,6 +9,18 @@ const { verifyAuth, verifyName, verifyAge, verifyTalk,
 const router = Router();
 const PATH = join(__dirname, '../talker.json');
 
+router.get('/talker/search', verifyAuth, async (req, res) => {
+  const { q } = req.query;
+  const talkers = await readFile(PATH);
+
+  const talkersFilter = talkers.filter((e) => e.name.includes(q));
+
+  if (!q || q.length === 0) {
+    return res.status(200).json(talkers);
+  }
+  return res.status(200).json(talkersFilter);
+});
+
 router.get('/talker', async (_req, res) => {
 const talkers = await readFile(PATH);
 res.status(200).json(talkers);
