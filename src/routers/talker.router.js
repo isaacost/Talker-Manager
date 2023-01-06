@@ -59,4 +59,13 @@ verifyWatchedAt, verifyRate, verifyRate2, async (req, res) => {
   res.status(200).json(editedTalker);  
 });
 
+router.delete('/talker/:id', verifyAuth, async (req, res) => {
+  const { id } = req.params;
+  const talkers = await readFile(PATH);
+  const filteredTalkers = talkers.filter((element) => Number(element.id) !== Number(id));
+
+  await writeFile(PATH, filteredTalkers);
+  res.status(204).json();
+});
+
 module.exports = router;
